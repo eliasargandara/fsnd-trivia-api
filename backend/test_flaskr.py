@@ -13,12 +13,23 @@ from models import setup_db, Question, Category
 load_dotenv()
 database_password = os.getenv('DB_PASSWORD', '')
 error_messages = {
-    "invalid_input": "The request could not be processed because of invalid data.",
-    "bad_request": "The browser (or proxy) sent a request that this server could not understand.",
-    "method_not_allowed": "The method is not allowed for the requested URL.",
-    "not_found": "The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.",
-    "unprocessable": "The request was well-formed but was unable to be followed due to semantic errors.",
-    "internal_server_error": "The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application."
+    "invalid_input": (
+        "The request could not be processed because of invalid data."),
+    "bad_request": (
+        "The browser (or proxy) sent a request that this server could"
+        " not understand."),
+    "method_not_allowed": (
+        "The method is not allowed for the requested URL."),
+    "not_found": (
+        "The requested URL was not found on the server. If you entered"
+        " the URL manually please check your spelling and try again."),
+    "unprocessable": (
+        "The request was well-formed but was unable to be followed due"
+        " to semantic errors."),
+    "internal_server_error": (
+        "The server encountered an internal error and was unable to"
+        " complete your request. Either the server is overloaded or"
+        " there is an error in the application.")
 }
 
 
@@ -73,7 +84,8 @@ class TriviaTestCase(unittest.TestCase):
             self.assertEqual(data["categories"][category_id], category.type)
 
     @mock.patch("flaskr.Category")
-    def test_retrieve_categories_when_returning_no_categories(self, mock_model):
+    def test_retrieve_categories_when_returning_no_categories(
+            self, mock_model):
         mock_model.query.return_value.all.return_value = []
         response = self.client.get("/categories")
         data = json.loads(response.data)
@@ -282,7 +294,10 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(validation_errors[0]["type"], "not_found")
         self.assertEqual(
             validation_errors[0]["message"],
-            "A resource for the attribute \"category\" with the value \"20\" was not found.")
+            (
+                "A resource for the attribute \"category\" with the value"
+                " \"20\" was not found."
+            ))
 
     def test_create_question_when_difficulty_out_of_range(self):
         payload = {
@@ -402,7 +417,9 @@ class TriviaTestCase(unittest.TestCase):
         self.assertIn(10, questions)
         self.assertEqual(
             questions[10]["question"],
-            "Which is the only team to play in every soccer World Cup tournament?")
+            (
+                "Which is the only team to play in every soccer"
+                " World Cup tournament?"))
         self.assertEqual(questions[10]["answer"], "Brazil")
         self.assertEqual(questions[10]["category"], 6)
         self.assertEqual(questions[10]["difficulty"], 3)
@@ -433,7 +450,8 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data["message"], error_messages["not_found"])
 
     @mock.patch("flaskr.Question")
-    def test_retrieve_category_questions_when_no_category_has_not_questions(self, mock_model):
+    def test_retrieve_category_questions_when_no_category_has_not_questions(
+            self, mock_model):
         mock_model.query.return_value.all.return_value = []
         category_id = 3
         response = self.client.get(f'/categories/{category_id}/questions')
@@ -509,9 +527,12 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(validation_errors[0]["type"], "not_found")
         self.assertEqual(
             validation_errors[0]["message"],
-            "A resource for the attribute \"quiz_category.id\" with the value \"10\" was not found.")
+            (
+                "A resource for the attribute \"quiz_category.id\" with the"
+                " value \"10\" was not found."))
 
-    def test_retrieve_quiz_question_when_category_has_no_questions_remaining(self):
+    def test_retrieve_quiz_question_when_category_has_no_questions_remaining(
+            self):
         payload = {
             "quiz_category": {
                 "id": 6

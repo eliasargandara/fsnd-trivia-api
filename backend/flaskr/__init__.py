@@ -10,10 +10,12 @@ from models import setup_db, Question, Category
 QUESTIONS_PER_PAGE = 10
 required_attribute_template = "A value is required for the attribute \"{}\"."
 integer_expected_template = "The attribute \"{}\" must be an integer."
-integer_out_of_range_template = "The attribute \"{}\" must be an integer from {} and {}."
+integer_out_of_range_template = (
+    "The attribute \"{}\" must be an integer from {} and {}.")
 list_expected_template = "The attribute \"{}\" must be a list."
 object_expected_template = "The attribute \"{}\" must be an object"
-not_found_template = "A resource for the attribute \"{}\" with the value \"{}\" was not found."
+not_found_template = (
+    "A resource for the attribute \"{}\" with the value \"{}\" was not found.")
 
 
 def create_app(test_config=None):
@@ -126,7 +128,8 @@ def create_app(test_config=None):
             errors.append({
                 "type": "number_out_of_range",
                 "attribute": "difficulty",
-                "message": integer_out_of_range_template.format("difficulty", 1, 5)
+                "message": (
+                    integer_out_of_range_template.format("difficulty", 1, 5))
             })
 
         return errors
@@ -164,7 +167,9 @@ def create_app(test_config=None):
                 return jsonify({
                     "success": False,
                     "type": "invalid_request_error",
-                    "message": "The request could not be processed because of invalid data.",
+                    "message": (
+                        "The request could not be processed because"
+                        " of invalid data."),
                     "validation_errors": validation_errors
                 }), 400
 
@@ -176,12 +181,17 @@ def create_app(test_config=None):
                 return jsonify({
                     "success": False,
                     "type": "invalid_request_error",
-                    "message": "The request could not be processed because of invalid data.",
+                    "message": (
+                        "The request could not be processed because"
+                        " of invalid data."),
                     "validation_errors": [
                         {
                             "attribute": "category",
                             "type": "not_found",
-                            "message": not_found_template.format("category", category_id)
+                            "message": (
+                                not_found_template.format(
+                                    "category",
+                                    category_id))
                         }
                     ]
                 }), 400
@@ -246,14 +256,16 @@ def create_app(test_config=None):
             validation_errors.append({
                 "type": "attribute_expected",
                 "attribute": "quiz_category.id",
-                "message": required_attribute_template.format("quiz_category.id")
+                "message": (
+                    required_attribute_template.format("quiz_category.id"))
             })
 
         if "previous_questions" not in data:
             validation_errors.append({
                 "type": "attribute_expected",
                 "attribute": "previous_questions",
-                "message": required_attribute_template.format("previous_questions")
+                "message": (
+                    required_attribute_template.format("previous_questions"))
             })
         elif type(previous_questions) is not list:
             validation_errors.append({
@@ -275,7 +287,9 @@ def create_app(test_config=None):
             return jsonify({
                 "success": False,
                 "type": "invalid_request_error",
-                "message": "The request could not be processed because of invalid data.",
+                "message": (
+                    "The request could not be processed because"
+                    " of invalid data."),
                 "validation_errors": validation_errors
             }), 400
 
@@ -286,11 +300,16 @@ def create_app(test_config=None):
             return jsonify({
                 "success": False,
                 "type": "invalid_request_error",
-                "message": "The request could not be processed because of invalid data.",
+                "message": (
+                    "The request could not be processed because"
+                    " of invalid data."),
                 "validation_errors": [{
                     "type": "not_found",
                     "attribute": "quiz_category.id",
-                    "message": not_found_template.format("quiz_category.id", category_id)
+                    "message": (
+                        not_found_template.format(
+                            "quiz_category.id",
+                            category_id))
                 }]
             }), 400
 
@@ -362,7 +381,7 @@ def is_integer(value):
             int(value)
         else:
             return False
-    except:
+    except Exception:
         return False
 
     return True
